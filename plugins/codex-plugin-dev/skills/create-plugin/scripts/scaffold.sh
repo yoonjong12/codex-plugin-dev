@@ -5,14 +5,17 @@ PLUGIN_NAME="${1:?Usage: scaffold.sh <plugin-name> [description]}"
 DESCRIPTION="${2:-A Codex CLI plugin}"
 TARGET_DIR="${3:-./$PLUGIN_NAME}"
 
-if [ -d "$TARGET_DIR/.codex-plugin" ]; then
-  echo "ERROR: $TARGET_DIR/.codex-plugin already exists"
+PLUGIN_SUBDIR="$TARGET_DIR/plugins/$PLUGIN_NAME"
+
+if [ -d "$PLUGIN_SUBDIR/.codex-plugin" ]; then
+  echo "ERROR: $PLUGIN_SUBDIR/.codex-plugin already exists"
   exit 1
 fi
 
-mkdir -p "$TARGET_DIR"/{.codex-plugin,skills,assets,.agents/plugins}
+mkdir -p "$PLUGIN_SUBDIR"/{.codex-plugin,skills,assets}
+mkdir -p "$TARGET_DIR/.agents/plugins"
 
-cat > "$TARGET_DIR/.codex-plugin/plugin.json" <<EOF
+cat > "$PLUGIN_SUBDIR/.codex-plugin/plugin.json" <<EOF
 {
   "name": "$PLUGIN_NAME",
   "version": "0.1.0",
@@ -34,7 +37,7 @@ cat > "$TARGET_DIR/.codex-plugin/plugin.json" <<EOF
 }
 EOF
 
-cat > "$TARGET_DIR/hooks.json" <<'EOF'
+cat > "$PLUGIN_SUBDIR/hooks.json" <<'EOF'
 {
   "hooks": {}
 }
@@ -51,7 +54,7 @@ cat > "$TARGET_DIR/.agents/plugins/marketplace.json" <<EOF
       "name": "$PLUGIN_NAME",
       "source": {
         "source": "local",
-        "path": "./"
+        "path": "./plugins/$PLUGIN_NAME"
       },
       "policy": {
         "installation": "AVAILABLE"
@@ -71,6 +74,7 @@ $DESCRIPTION
 
 \`\`\`bash
 codex plugin marketplace add <owner>/$PLUGIN_NAME
+codex plugin add $PLUGIN_NAME@$PLUGIN_NAME
 \`\`\`
 
 ## License
@@ -81,4 +85,4 @@ EOF
 echo "OK: scaffolded $PLUGIN_NAME at $TARGET_DIR"
 echo ""
 echo "Structure:"
-find "$TARGET_DIR" -not -path '*/\.*' -not -name '.DS_Store' | head -20
+find "$TARGET_DIR" -not -path '*/\.*' -not -name '.DS_Store' | head -25
