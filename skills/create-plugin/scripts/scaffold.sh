@@ -10,7 +10,7 @@ if [ -d "$TARGET_DIR/.codex-plugin" ]; then
   exit 1
 fi
 
-mkdir -p "$TARGET_DIR"/{.codex-plugin,skills,hooks,agents,assets}
+mkdir -p "$TARGET_DIR"/{.codex-plugin,skills,assets,.agents/plugins}
 
 cat > "$TARGET_DIR/.codex-plugin/plugin.json" <<EOF
 {
@@ -24,7 +24,7 @@ cat > "$TARGET_DIR/.codex-plugin/plugin.json" <<EOF
   "license": "MIT",
   "keywords": [],
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json",
+  "hooks": "./hooks.json",
   "interface": {
     "displayName": "$PLUGIN_NAME",
     "shortDescription": "$DESCRIPTION",
@@ -34,13 +34,13 @@ cat > "$TARGET_DIR/.codex-plugin/plugin.json" <<EOF
 }
 EOF
 
-cat > "$TARGET_DIR/hooks/hooks.json" <<'EOF'
+cat > "$TARGET_DIR/hooks.json" <<'EOF'
 {
   "hooks": {}
 }
 EOF
 
-cat > "$TARGET_DIR/marketplace.json" <<EOF
+cat > "$TARGET_DIR/.agents/plugins/marketplace.json" <<EOF
 {
   "name": "$PLUGIN_NAME",
   "interface": {

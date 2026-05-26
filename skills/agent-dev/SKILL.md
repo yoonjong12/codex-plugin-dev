@@ -11,7 +11,8 @@ Codex subagents are specialized workers defined in `.toml` files. Each agent has
 
 ## Agent File Location
 
-- Plugin agents: `agents/<agent-name>.toml`
+Agents cannot be bundled inside plugins. Install at personal or project scope:
+
 - Personal agents: `~/.codex/agents/<agent-name>.toml`
 - Project agents: `.codex/agents/<agent-name>.toml`
 
@@ -46,7 +47,7 @@ nickname_candidates = ["Argus", "Sentinel"]
 |-------|---------|-------------|
 | `model` | inherits | Override model (e.g., "gpt-5.4") |
 | `model_reasoning_effort` | - | Reasoning intensity |
-| `sandbox_mode` | "read-write" | `"read-only"`, `"read-write"`, `"network-only"` |
+| `sandbox_mode` | "workspace-write" | `"read-only"`, `"workspace-write"`, `"danger-full-access"` |
 | `nickname_candidates` | [] | Display names for UI |
 
 ## MCP Server Binding

@@ -1,16 +1,71 @@
 # Codex Hook Events Reference
 
+## Common Input Fields
+
+All hook events receive JSON on stdin with these common fields:
+
+```json
+{
+  "hook_event_name": "<EventName>",
+  "cwd": "/current/working/directory",
+  "model": "gpt-5.4",
+  "permission_mode": "default",
+  "session_id": "uuid",
+  "transcript_path": "/path/to/transcript.jsonl",
+  "turn_id": "uuid"
+}
+```
+
+## Common Output Fields
+
+All hooks can return:
+
+```json
+{
+  "decision": "approve|block",
+  "reason": "Human-readable explanation",
+  "continue": false,
+  "suppressOutput": false,
+  "systemMessage": "Optional message injected into context",
+  "hookSpecificOutput": { ... }
+}
+```
+
+- `decision`: `"approve"` (allow) or `"block"` (prevent)
+- `continue`: boolean, force another turn after Stop
+- `hookSpecificOutput`: event-specific fields (see below)
+
 ## Turn-Scoped Events
 
 ### PreToolUse
 
-Fires before a tool executes. Can approve, deny, or rewrite the tool call.
+Fires before a tool executes. Can approve, block, or rewrite the tool call.
 
-**Matcher**: tool name (e.g., `"Bash"`, `"Write"`, `"*"` for all)
+**Matcher**: tool name (e.g., `"shell"`, `"*"` for all)
 
-**Input**: `{ "hook_event": "PreToolUse", "tool_name": "...", "tool_input": {...} }`
+**Additional input fields**:
+```json
+{
+  "tool_name": "shell",
+  "tool_input": { "command": "..." },
+  "tool_use_id": "uuid"
+}
+```
 
-**Output**: `{ "decision": "approve|deny|skip", "reason": "..." }` or `{ "tool_input": {...} }` to rewrite
+**hookSpecificOutput**:
+```json
+{
+  "hookSpecificOutput": {
+    "permissionDecision": "allow|deny|ask",
+    "updatedInput": { "command": "..." },
+    "additionalContext": "Extra context for the model"
+  }
+}
+```
+
+- `permissionDecision`: `"allow"` (auto-approve), `"deny"` (auto-deny), `"ask"` (prompt user)
+- `updatedInput`: rewrite the tool input
+- `additionalContext`: inject context the model sees
 
 ### PostToolUse
 
@@ -18,27 +73,41 @@ Fires after a tool executes. Can modify the result.
 
 **Matcher**: tool name
 
-**Input**: `{ "hook_event": "PostToolUse", "tool_name": "...", "tool_input": {...}, "tool_output": "..." }`
+**Additional input fields**:
+```json
+{
+  "tool_name": "shell",
+  "tool_input": { "command": "..." },
+  "tool_output": "...",
+  "tool_use_id": "uuid"
+}
+```
 
-**Output**: `{ "tool_output": "..." }` to replace result, or empty for no-op
+**hookSpecificOutput**:
+```json
+{
+  "hookSpecificOutput": {
+    "updatedOutput": "replacement output"
+  }
+}
+```
 
 ### UserPromptSubmit
 
 Fires when a user submits a prompt, before it enters the agent loop.
 
-**Matcher**: none (fires for all prompts)
-
-**Input**: `{ "hook_event": "UserPromptSubmit", "prompt": "..." }`
-
-**Output**: `{ "prompt": "..." }` to rewrite, or empty for no-op
+**Additional input fields**:
+```json
+{
+  "prompt": "user input text"
+}
+```
 
 ### Stop
 
-Fires after the agent completes a turn. Can force continuation.
+Fires after the agent completes a turn.
 
-**Input**: `{ "hook_event": "Stop", "stop_reason": "..." }`
-
-**Output**: `{ "decision": "continue", "reason": "..." }` to force another turn
+**Output**: set `"continue": true` to force another turn.
 
 ### PreCompact / PostCompact
 
@@ -46,19 +115,30 @@ Fires before/after conversation compression.
 
 ### PermissionRequest
 
-Fires when the agent requests permission for a tool call. Can auto-approve or auto-deny.
+Fires when the agent requests permission for a tool call.
 
-**Input**: `{ "hook_event": "PermissionRequest", "tool_name": "...", "tool_input": {...} }`
+**Additional input fields**:
+```json
+{
+  "tool_name": "shell",
+  "tool_input": { "command": "..." }
+}
+```
 
-**Output**: `{ "decision": "approve|deny" }`
+**hookSpecificOutput**:
+```json
+{
+  "hookSpecificOutput": {
+    "permissionDecision": "allow|deny|ask"
+  }
+}
+```
 
 ## Session-Scoped Events
 
 ### SessionStart
 
 Fires on session start, resume, clear, or compact recovery.
-
-**Input**: `{ "hook_event": "SessionStart", "trigger": "start|resume|clear|compact" }`
 
 ### SubagentStart / SubagentStop
 

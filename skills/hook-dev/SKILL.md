@@ -11,7 +11,7 @@ Hooks inject custom logic into the Codex agent loop at specific lifecycle events
 
 ## hooks.json Structure
 
-Place at `hooks/hooks.json` in your plugin (or `~/.codex/hooks.json` for personal hooks).
+Place at plugin root as `hooks.json` (or `~/.codex/hooks.json` for personal hooks).
 
 ```json
 {
@@ -38,7 +38,7 @@ Place at `hooks/hooks.json` in your plugin (or `~/.codex/hooks.json` for persona
 See `references/events.md` for the complete event list with input/output schemas.
 
 Core events:
-- **PreToolUse** — before a tool executes (can deny or rewrite)
+- **PreToolUse** — before a tool executes (can block or rewrite)
 - **PostToolUse** — after a tool executes (can modify result)
 - **UserPromptSubmit** — before user prompt enters the agent loop
 - **SessionStart** — on session start, resume, clear, or compact
@@ -52,21 +52,28 @@ Hook scripts receive JSON on stdin and must output JSON on stdout.
 **Input** (from Codex):
 ```json
 {
-  "hook_event": "PreToolUse",
-  "tool_name": "Bash",
-  "tool_input": { "command": "rm -rf /" }
+  "hook_event_name": "PreToolUse",
+  "tool_name": "shell",
+  "tool_input": { "command": "rm -rf /" },
+  "cwd": "/path/to/project",
+  "model": "gpt-5.4",
+  "session_id": "uuid",
+  "turn_id": "uuid"
 }
 ```
 
 **Output** (to Codex):
 ```json
 {
-  "decision": "deny",
-  "reason": "Destructive command blocked"
+  "decision": "block",
+  "reason": "Destructive command blocked",
+  "hookSpecificOutput": {
+    "permissionDecision": "deny"
+  }
 }
 ```
 
-Decision values: `"approve"`, `"deny"`, `"skip"` (pass to next hook), or omit for no-op.
+Decision values: `"approve"` or `"block"`. Use `hookSpecificOutput.permissionDecision` for `"allow"`, `"deny"`, or `"ask"` (prompt user).
 
 ## Creating a Hook
 

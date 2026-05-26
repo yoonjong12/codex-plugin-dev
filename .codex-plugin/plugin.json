@@ -16,7 +16,7 @@
     "codex-cli"
   ],
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json",
+  "hooks": "./hooks.json",
   "interface": {
     "displayName": "Plugin Dev Toolkit",
     "shortDescription": "Scaffold, develop, validate, and publish Codex plugins",

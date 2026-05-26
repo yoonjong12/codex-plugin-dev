@@ -78,9 +78,9 @@ echo ""
 
 # --- Hooks ---
 echo "[Hooks]"
-HOOKS_FILE="$PLUGIN_DIR/hooks/hooks.json"
+HOOKS_FILE="$PLUGIN_DIR/hooks.json"
 if [ ! -f "$HOOKS_FILE" ]; then
-  warn "no hooks/hooks.json (optional)"
+  warn "no hooks.json at plugin root (optional)"
 else
   if python3 -c "import json; json.load(open('$HOOKS_FILE'))" 2>/dev/null; then
     ok "hooks.json is valid JSON"
@@ -90,22 +90,17 @@ else
 fi
 echo ""
 
-# --- Agents ---
-echo "[Agents]"
-AGENTS_DIR="$PLUGIN_DIR/agents"
-if [ ! -d "$AGENTS_DIR" ] || [ -z "$(ls -A "$AGENTS_DIR" 2>/dev/null)" ]; then
-  warn "no agents/ (optional)"
+# --- Marketplace ---
+echo "[Marketplace]"
+MKT_FILE="$PLUGIN_DIR/.agents/plugins/marketplace.json"
+if [ ! -f "$MKT_FILE" ]; then
+  warn "no .agents/plugins/marketplace.json (required for 'codex plugin marketplace add')"
 else
-  for agent_file in "$AGENTS_DIR"/*.toml; do
-    [ -f "$agent_file" ] || continue
-    agent_name=$(basename "$agent_file" .toml)
-
-    if grep -q '^name' "$agent_file" && grep -q '^description' "$agent_file" && grep -q '^developer_instructions' "$agent_file"; then
-      ok "agents/$agent_name.toml: required fields present"
-    else
-      fail "agents/$agent_name.toml: missing required fields (name, description, developer_instructions)"
-    fi
-  done
+  if python3 -c "import json; json.load(open('$MKT_FILE'))" 2>/dev/null; then
+    ok "marketplace.json is valid JSON"
+  else
+    fail "marketplace.json is invalid JSON"
+  fi
 fi
 echo ""
 

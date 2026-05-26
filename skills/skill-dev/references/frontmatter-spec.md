@@ -7,6 +7,18 @@
 | `name` | string | Skill identifier (kebab-case) |
 | `description` | string | Trigger description — determines when the skill is loaded |
 
+## Optional Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `license` | string | SPDX license identifier |
+| `allowed-tools` | string[] | Tools auto-approved when this skill is active |
+| `metadata` | object | Arbitrary key-value metadata |
+| `disable-model-invocation` | boolean | Prevent model from auto-invoking this skill |
+| `user-invocable` | boolean | Whether users can invoke directly (default: true) |
+| `context` | string | `"fork"` to run in a subagent context |
+| `agent` | string | Agent name to delegate to when `context: fork` |
+
 ## Description Best Practices
 
 The description is the primary matching mechanism. Codex loads name + description at session start and matches against user input.

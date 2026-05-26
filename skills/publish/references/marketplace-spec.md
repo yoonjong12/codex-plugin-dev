@@ -49,6 +49,10 @@ A marketplace is a git repository containing a `marketplace.json` that indexes p
 
 ## CLI Commands
 
+Two command groups — marketplace (source management) vs plugin (installation):
+
+### Marketplace commands (manage sources)
+
 ```bash
 codex plugin marketplace add <owner>/<repo>
 codex plugin marketplace add <owner>/<repo> --ref <branch>
@@ -57,6 +61,16 @@ codex plugin marketplace list
 codex plugin marketplace upgrade [name]
 codex plugin marketplace remove <name>
 ```
+
+### Plugin commands (manage installations)
+
+```bash
+codex plugin add <plugin-name>@<marketplace-name>
+codex plugin remove <plugin-name>
+codex plugin list
+```
+
+`marketplace add` registers a source. `plugin add` installs a specific plugin from a registered marketplace.
 
 ## Same-Repo Marketplace
 
