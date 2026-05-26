@@ -60,9 +60,9 @@ Keep each SKILL.md focused on one task. Use imperative steps. Include explicit i
 
 ## Phase 5: Implement Other Components
 
-For hooks: create `hooks/hooks.json` with event handlers. Use `"type": "command"` handlers pointing to scripts.
+For hooks: create `hooks.json` at plugin root with event handlers. Use `"type": "command"` handlers pointing to scripts.
 
-For agents: create `.toml` files in `agents/` with `name`, `description`, `developer_instructions` fields.
+For agents: agents cannot be bundled in plugins. Create `.toml` files at project scope (`.codex/agents/`) or personal scope (`~/.codex/agents/`). Guide the user to use the `agent-dev` skill separately.
 
 For MCP: create `.mcp.json` at plugin root with server definitions.
 

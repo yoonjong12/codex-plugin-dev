@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-AGENT_NAME="${1:?Usage: init-agent.sh <agent-name> [plugin-dir]}"
-PLUGIN_DIR="${2:-.}"
-AGENT_FILE="$PLUGIN_DIR/agents/$AGENT_NAME.toml"
+AGENT_NAME="${1:?Usage: init-agent.sh <agent-name> [scope]}"
+SCOPE="${2:-project}"
 
-mkdir -p "$PLUGIN_DIR/agents"
+case "$SCOPE" in
+  project)  AGENT_DIR=".codex/agents" ;;
+  personal) AGENT_DIR="$HOME/.codex/agents" ;;
+  *) echo "FAIL: scope must be 'project' or 'personal'"; exit 1 ;;
+esac
+
+AGENT_FILE="$AGENT_DIR/$AGENT_NAME.toml"
+
+mkdir -p "$AGENT_DIR"
 
 if [ -f "$AGENT_FILE" ]; then
   echo "ERROR: $AGENT_FILE already exists"

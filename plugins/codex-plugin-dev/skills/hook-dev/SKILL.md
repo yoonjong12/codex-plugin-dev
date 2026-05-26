@@ -77,14 +77,14 @@ Decision values: `"approve"` or `"block"`. Use `hookSpecificOutput.permissionDec
 
 ## Creating a Hook
 
-1. Write the script in `hooks/` or `skills/<skill>/scripts/`
+1. Write the script in `scripts/` or `skills/<skill>/scripts/`
 2. Make it executable: `chmod +x`
-3. Register in `hooks/hooks.json`
+3. Register in `hooks.json` at plugin root
 4. Test with the linter and test scripts
 
 ```bash
-bash "${PLUGIN_ROOT}/skills/hook-dev/scripts/hook-linter.sh" hooks/hooks.json
-bash "${PLUGIN_ROOT}/skills/hook-dev/scripts/test-hook.sh" hooks/my-script.sh '{"hook_event":"PreToolUse","tool_name":"Bash","tool_input":{"command":"echo hello"}}'
+bash "${PLUGIN_ROOT}/skills/hook-dev/scripts/hook-linter.sh" hooks.json
+bash "${PLUGIN_ROOT}/skills/hook-dev/scripts/test-hook.sh" scripts/my-hook.sh '{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"echo hello"}}'
 ```
 
 ## Trust Model

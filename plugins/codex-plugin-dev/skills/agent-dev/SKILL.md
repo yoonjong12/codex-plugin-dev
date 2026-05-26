@@ -74,8 +74,10 @@ disabled = ["dangerous-skill"]
 ## Initialize an Agent
 
 ```bash
-bash "${PLUGIN_ROOT}/skills/agent-dev/scripts/init-agent.sh" "<agent-name>" "<plugin-dir>"
+bash "${PLUGIN_ROOT}/skills/agent-dev/scripts/init-agent.sh" "<agent-name>" "<scope>"
 ```
+
+Scope: `project` (default, creates `.codex/agents/`) or `personal` (`~/.codex/agents/`).
 
 ## Best Practices
 

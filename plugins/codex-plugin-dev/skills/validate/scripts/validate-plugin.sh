@@ -92,9 +92,10 @@ echo ""
 
 # --- Marketplace ---
 echo "[Marketplace]"
-MKT_FILE="$PLUGIN_DIR/.agents/plugins/marketplace.json"
+REPO_ROOT="$(dirname "$(dirname "$PLUGIN_DIR")")"
+MKT_FILE="$REPO_ROOT/.agents/plugins/marketplace.json"
 if [ ! -f "$MKT_FILE" ]; then
-  warn "no .agents/plugins/marketplace.json (required for 'codex plugin marketplace add')"
+  warn "no .agents/plugins/marketplace.json at repo root (required for 'codex plugin marketplace add')"
 else
   if python3 -c "import json; json.load(open('$MKT_FILE'))" 2>/dev/null; then
     ok "marketplace.json is valid JSON"
