@@ -40,6 +40,28 @@ cat > "$TARGET_DIR/hooks/hooks.json" <<'EOF'
 }
 EOF
 
+cat > "$TARGET_DIR/marketplace.json" <<EOF
+{
+  "name": "$PLUGIN_NAME",
+  "interface": {
+    "displayName": "$PLUGIN_NAME"
+  },
+  "plugins": [
+    {
+      "name": "$PLUGIN_NAME",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Development"
+    }
+  ]
+}
+EOF
+
 cat > "$TARGET_DIR/README.md" <<EOF
 # $PLUGIN_NAME
 
