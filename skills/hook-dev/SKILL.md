@@ -1,0 +1,85 @@
+---
+name: hook-dev
+description: Develop Codex CLI hooks. Use when the user says "create a hook", "add a hook", "write a hook", "hook development", or needs guidance on hooks.json format, available events, hook scripts, testing, or debugging hooks.
+---
+
+# Hook Development
+
+## Overview
+
+Hooks inject custom logic into the Codex agent loop at specific lifecycle events. They execute shell scripts and can modify, block, or augment agent behavior.
+
+## hooks.json Structure
+
+Place at `hooks/hooks.json` in your plugin (or `~/.codex/hooks.json` for personal hooks).
+
+```json
+{
+  "hooks": {
+    "<EventName>": [
+      {
+        "matcher": "<ToolName or pattern>",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${PLUGIN_ROOT}/hooks/my-script.sh",
+            "statusMessage": "Running validation...",
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## Available Events
+
+See `references/events.md` for the complete event list with input/output schemas.
+
+Core events:
+- **PreToolUse** — before a tool executes (can deny or rewrite)
+- **PostToolUse** — after a tool executes (can modify result)
+- **UserPromptSubmit** — before user prompt enters the agent loop
+- **SessionStart** — on session start, resume, clear, or compact
+- **Stop** — after turn completion (can force continue)
+- **SubagentStart / SubagentStop** — subagent lifecycle
+
+## Hook Script Contract
+
+Hook scripts receive JSON on stdin and must output JSON on stdout.
+
+**Input** (from Codex):
+```json
+{
+  "hook_event": "PreToolUse",
+  "tool_name": "Bash",
+  "tool_input": { "command": "rm -rf /" }
+}
+```
+
+**Output** (to Codex):
+```json
+{
+  "decision": "deny",
+  "reason": "Destructive command blocked"
+}
+```
+
+Decision values: `"approve"`, `"deny"`, `"skip"` (pass to next hook), or omit for no-op.
+
+## Creating a Hook
+
+1. Write the script in `hooks/` or `skills/<skill>/scripts/`
+2. Make it executable: `chmod +x`
+3. Register in `hooks/hooks.json`
+4. Test with the linter and test scripts
+
+```bash
+bash "${PLUGIN_ROOT}/skills/hook-dev/scripts/hook-linter.sh" hooks/hooks.json
+bash "${PLUGIN_ROOT}/skills/hook-dev/scripts/test-hook.sh" hooks/my-script.sh '{"hook_event":"PreToolUse","tool_name":"Bash","tool_input":{"command":"echo hello"}}'
+```
+
+## Trust Model
+
+Codex uses hash-based trust for hooks. When a hook script changes, Codex prompts for re-approval. This is automatic — no action needed from the developer.
