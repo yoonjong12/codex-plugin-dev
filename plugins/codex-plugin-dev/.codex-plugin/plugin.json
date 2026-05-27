@@ -1,6 +1,6 @@
 {
   "name": "codex-plugin-dev",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Codex CLI native plugin development toolkit — scaffold, develop, validate, and publish Codex plugins. Shell-script driven workflows for creating skills, hooks, agents, MCP integrations, and managing marketplace releases.",
   "author": {
     "name": "yoonjong12",
