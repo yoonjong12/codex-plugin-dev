@@ -8,7 +8,7 @@ A marketplace is a git repository containing a `marketplace.json` that indexes p
 
 - Repository: `$REPO_ROOT/.agents/plugins/marketplace.json`
 - Personal: `~/.agents/plugins/marketplace.json`
-- Legacy: `$REPO_ROOT/.claude-plugin/marketplace.json`
+- Legacy: `$REPO_ROOT/.agents/plugins/marketplace.json` (same location, prior naming convention)
 
 ### Format
 

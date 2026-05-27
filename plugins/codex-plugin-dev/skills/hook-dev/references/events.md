@@ -147,5 +147,5 @@ Fires when a subagent is spawned or completes.
 ## Environment Variables
 
 Hook scripts have access to:
-- `PLUGIN_ROOT` / `CLAUDE_PLUGIN_ROOT` — plugin installation directory
-- `PLUGIN_DATA` / `CLAUDE_PLUGIN_DATA` — writable data directory
+- `PLUGIN_ROOT` — plugin installation directory
+- `PLUGIN_DATA` — writable data directory
